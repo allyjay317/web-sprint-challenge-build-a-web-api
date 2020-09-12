@@ -72,8 +72,12 @@ function verifyId(req, res, next) {
   else {
     db.get(id)
       .then(result => {
-        req.project = result
-        next()
+        if (result == null) {
+          res.status(404).json({ message: 'Sorry, that id does not exist' })
+        } else {
+          req.project = result
+          next()
+        }
       })
       .catch(error => {
         res.status(500).json({ message: 'Sorry, something went wrong' })
