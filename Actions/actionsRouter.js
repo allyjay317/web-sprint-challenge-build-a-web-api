@@ -7,7 +7,13 @@ router.use('/:aId/', verifyId)
 router.get('/', (req, res) => {
   db.get()
     .then(result => {
-      const projectActions = result.filter(action => action.project_id === req.project.id)
+      let projectActions = null
+      if (req.project) {
+        projectActions = result.filter(action => action.project_id === req.project.id)
+      }
+      else {
+        projectActions = result
+      }
       res.status(200).json(projectActions)
     })
 })
@@ -27,7 +33,16 @@ router.post('/', verifySchema, (req, res) => {
 })
 
 function verifySchema(req, res, next) {
-  req.body.project_id = req.project.id
+  if (req.project) {
+    req.body.project_id = req.project.id
+  }
+  else {
+    if (!req.body.project_id) {
+      res.status(400).json({ message: 'please assign this action to a project' })
+      return
+    }
+  }
+
   if (req.body.description && req.body.notes) {
     next()
   }
@@ -49,7 +64,7 @@ function verifyId(req, res, next) {
           res.status(404).json({ message: "Sorry, an action with that id does not exist for this project" })
         }
         else {
-          if (result.project_id !== req.project.id) {
+          if (result.project && result.project_id !== req.project.id) {
             res.status(404).json({ message: "Sorry, an action with that id does not exist for this project" })
           }
           else {
