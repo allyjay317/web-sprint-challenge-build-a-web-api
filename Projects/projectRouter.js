@@ -73,7 +73,7 @@ function verifyId(req, res, next) {
     db.get(id)
       .then(result => {
         if (result == null) {
-          res.status(404).json({ message: 'Sorry, that id does not exist' })
+          res.status(404).json({ message: 'Sorry, a project with that id does not exist' })
         } else {
           req.project = result
           next()
