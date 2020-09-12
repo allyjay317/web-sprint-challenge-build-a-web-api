@@ -15,6 +15,8 @@ router.get('/', (req, res) => {
         projectActions = result
       }
       res.status(200).json(projectActions)
+    }).catch(err => {
+      res.status(500).json({ message: 'Sorry, something went wrong' })
     })
 })
 
@@ -28,6 +30,30 @@ router.post('/', verifySchema, (req, res) => {
       res.status(201).json(result)
     })
     .catch(err => {
+      res.status(500).json({ message: 'Sorry, something went wrong' })
+    })
+})
+
+router.put('/:aId/', verifySchema, (req, res) => {
+  for (const param in req.action) {
+    if (!req.body[param]) {
+      req.body[param] = req.action[param]
+    }
+  }
+  db.update(req.params.aId, req.body)
+    .then(result => {
+      res.status(200).json(result)
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Sorry, something went wrong' })
+    })
+})
+
+router.delete('/:aId/', (req, res) => {
+  db.remove(req.params.aId)
+    .then(result => {
+      res.status(204).end()
+    }).catch(err => {
       res.status(500).json({ message: 'Sorry, something went wrong' })
     })
 })
