@@ -49,8 +49,13 @@ function verifyId(req, res, next) {
           res.status(404).json({ message: "Sorry, an action with that id does not exist for this project" })
         }
         else {
-          req.action = result
-          next()
+          if (result.project_id !== req.project.id) {
+            res.status(404).json({ message: "Sorry, an action with that id does not exist for this project" })
+          }
+          else {
+            req.action = result
+            next()
+          }
         }
       })
       .catch(err => {
