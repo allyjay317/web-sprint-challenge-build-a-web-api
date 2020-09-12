@@ -4,7 +4,7 @@ const router = express.Router()
 const db = require('../data/helpers/projectModel')
 const actionsRouter = require('../Actions/actionsRouter')
 router.use('/:pId/', verifyId)
-router.use('/:pId/Actions/', actionsRouter)
+router.use('/:pId/actions/', actionsRouter)
 
 router.get('/', (req, res) => {
   db.get()
